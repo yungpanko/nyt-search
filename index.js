@@ -8,7 +8,7 @@ $(document).ready(function () {
 // define functions here
 
 function submitForm() {
-  $('form').on('submit', function (event) {
+  $('#form').on('submit', function (event) {
     page = 1
     $('#articles').empty()
     $('#searchPagination').empty()
@@ -39,6 +39,8 @@ function nextPage() {
 }
 
 function createAndDisplayArticles(data) {
+  let results = parseInt(data.response.meta.hits, 10)
+  let pageResults = Math.ceil(results / 10) - 1
   let articles = data.response.docs
   let displayArticles = articles.map((object) => {
     return new Article(object)
@@ -49,7 +51,7 @@ function createAndDisplayArticles(data) {
       $(`#article${index + 1}`).prepend(`<div class="element1 thumb"><a href=${article.url}><img src=${article.imgUrl} width=75></a></div>`)
     }
   })
-  if (displayArticles.length > 9) {
+  if (results > 10 && page < pageResults) {
     $('#searchPagination').append(`<div><span class="pageNumber selectedPage">${page}</span><span><a href="#" id=next class="stepToPage next">Next >></a></span></div>`)
   }
   if (page > 1) {
